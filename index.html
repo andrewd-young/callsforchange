@@ -1,0 +1,311 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>Calls For Change</title>
+	<script src="https://kit.fontawesome.com/ac16ade51f.js" crossorigin="anonymous"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bulma@0.8.2/css/bulma.min.css">
+</head>
+<body>
+    <div class="menubar" style="position:fixed; background-color: rgb(20, 19, 25);">
+        <a href=".">
+            <i class="fas fa-bullhorn" style="float: left; margin-left: 7.5%;
+            margin-top: 20px; font-size: 70px; color: #ffffff;"></i>
+            <h2 style="font-size: 30px; float: left; margin-left: 3%; margin-top: 10px;">Calls<br>For Change</h2>
+        </a>
+
+        <button style="margin-right: 7.5%; height: 57.5px; margin-top: 28.75px; margin-bottom: 28.75px; position: absolute; right: 0px; width: 230px; color:#ffffff;" onclick='window.open("newcampaign.html?p=0", "_self")'>Create Campaign</button>
+    </div>
+
+    <div class="maindiv">
+        <div class="outerdiv" id="outerdiv">
+            
+        </div>
+
+        <!-- <div class="sidediv" id="sidediv">
+            <h2 style="font-size: 30px; ">New Campaigns</h2>
+        </div> -->
+    </div>
+
+    <div id="overlay">
+        <div class="overlayDiv" id="overlayDiv">
+
+        </div>
+    </div>
+
+</body>
+</html>
+<script>
+
+    //Check if browser is mobile----------------------------------------------------
+    var isMobile = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent);
+    var outerdiv = document.getElementById('outerdiv');
+
+    if(isMobile) {
+        // sidediv.innerHTML = '';
+        outerdiv.setAttribute("style", "width:85%;");
+        // sidediv.remove();
+    }
+
+    //Writing JSON----------------------------------------------------
+
+    // var obj = {
+    //     table: []
+    // };
+
+    // obj.table.push({id: 1, square:2});
+
+    // var json = JSON.stringify(obj);
+
+    // var fs = require('fs');
+    // fs.writeFile('data.json', json, 'utf8', callback);
+
+    //Create new campaign----------------------------------------------------
+
+    var campaignArray = [];
+
+    function createCampaign(newTitle, newDescription, newCallNumber, newImageLink, newPhoneNumbers) {
+        var newCampaign = {title:newTitle, description:newDescription, callNumber:newCallNumber, imageLink:newImageLink, phoneNumbers:newPhoneNumbers};
+        campaignArray.push(newCampaign);
+    }
+
+    createCampaign("Top Campaign Title", "Here is a description of the top campaign. It is a long and detailed description about the importance of this issue. ", 10240, "https://images.complex.com/complex/images/c_fill,dpr_auto,f_auto,q_90,w_1400/fl_lossy,pg_1/eelzvw9pkziu1tuila2n/nyc-protest", [{numberDescription:"Number Description", number:5089756244}, {numberDescription:"Second Number Description", number:5085452445}]);
+    createCampaign("Campaign Title", "Here is a description of the next campaign.", 5360, "https://cdn.vox-cdn.com/thumbor/QuTsf9KyR4gCaUviJoZy_98U6DY=/0x0:5568x3712/1200x675/filters:focal(2339x1411:3229x2301)/cdn.vox-cdn.com/uploads/chorus_image/image/66908888/1218460006.jpg.0.jpg");
+    createCampaign("Campaign Title", "Here is a description of the next campaign.", 5360, "https://images.complex.com/complex/images/c_fill,dpr_auto,f_auto,q_90,w_1400/fl_lossy,pg_1/eelzvw9pkziu1tuila2n/nyc-protest");
+
+    //Get call goal----------------------------------------------------
+    function getCallGoal(i){
+        var callGoal;
+
+        var number = campaignArray[i].callNumber;
+        
+        if(number > 1000000) {
+            callGoal = Math.ceil((number+0.1)/1000000)*1000000;
+        }else if(number > 100000){
+            callGoal = Math.ceil((number+0.1)/100000)*100000;
+        }else if(number > 10000){
+            callGoal = Math.ceil((number+0.1)/10000)*10000;
+        }else if(number > 1000){
+            callGoal = Math.ceil((number+0.1)/1000)*1000;
+        }else if(number > 100){
+            callGoal = Math.ceil((number+0.1)/100)*100;
+        }else {
+            callGoal = 100;
+        }
+
+        return callGoal;
+    }
+
+    //Set Contents of Div----------------------------------------------------
+    for(var i = 0; i < campaignArray.length; i++) {
+        outerdiv.innerHTML = outerdiv.innerHTML + `
+        <a href="campaign.html?title=` + campaignArray[i].title + "&amp;description=" + campaignArray[i].description + "&amp;callNumber=" + campaignArray[i].callNumber + "&amp;imageLink=" + campaignArray[i].imageLink + `">
+        <div class="bodydiv">
+            <div class="divoverlay"></div>
+            <div>
+                <h2 style="float: left; width: 50%; margin-right:7.5%">` + campaignArray[i].title + `</h2>
+                <img id="image ` + i + `" style="object-fit:cover; width:175px; height:175px; float: right; margin-right:7.5%; border-radius: 40px;" src="` + campaignArray[i].imageLink + `">
+            </div>
+            <p style="width:425px"> ${campaignArray[i].description} </p>
+            <p style="color: white;">` + campaignArray[i].callNumber + ` took action - Help us reach ` + getCallGoal(i)  + `</p>
+            <progress class="progress is-primary" value="` + (100 * (campaignArray[i].callNumber/getCallGoal(i))) + `" max="100" style="color:rgb(44, 42, 56); margin-left: 7.5%; width: 85%; margin-bottom: 40px;">60%</progress>
+        </div>
+        </a>`;
+
+        // <a href="campaign.html?title=` + campaignArray[i].title + "&amp;description=" + campaignArray[i].description + "&amp;callNumber=" + campaignArray[i].callNumber + "&amp;imageLink=" + campaignArray[i].imageLink + `"><button>Learn More</button></a>
+        // <button style="background-color: #3e98dc;" onclick="on(` + i + `)">Call Now</button>
+        // image = document.getElementById("image " + i);
+    }
+
+    //Overlay functions----------------------------------------------------
+    function on(i) {
+        document.getElementById("overlay").style.display = "grid";
+
+        if(i != -1) {
+            // overlayDiv.innerHTML = '<div><h2 style="float: left; width: 50%; margin-right:7.5%">' + campaignArray[i].title + '</h2><img id="image ' + i + '" style="object-fit:cover; width:350px; height:350px; float: right; margin-right:7.5%; border-radius: 40px;" src="' + campaignArray[i].imageLink + '"></div><p>' + campaignArray[i].description + '</p><p style="color: white;">' + campaignArray[i].callNumber + ' calls - Help us reach ' + getCallGoal(i)  + '</p><progress class="progress is-success" value="' + (100 * (campaignArray[i].callNumber/getCallGoal(i))) + '" max="100" style="margin-left: 7.5%; width: 85%; margin-bottom: 40px;">60%</progress><button onclick="on(' + i + ')">Learn More</button><button style="background-color: #3e98dc;">Call Now</button>';
+        }else{
+            overlayDiv.innerHTML = '<h2>Create a Campaign</h2>'
+        }
+    }
+
+    function off() {
+        document.getElementById("overlay").style.display = "none";
+    }
+
+    //Click detection on overlay----------------------------------------------------   
+    var overlayDiv = document.getElementById('overlayDiv');
+
+    var clicks = 0;
+    
+    document.addEventListener('click', function(event) {
+        var isClickInside = overlayDiv.contains(event.target);
+ 
+        if (!isClickInside && clicks == 1) {
+            off();
+            clicks = 0;
+        }else if(!isClickInside){
+            clicks++;
+        }
+    });
+</script> 
+
+<style>
+    .bodydiv{
+    background-color: rgb(20, 19, 25);
+    margin-bottom: 5%;
+    overflow: auto;
+    border-radius: 40px;
+    padding-top: 30px; 
+    transition: transform .2s;
+    position: relative;
+    z-index: 0;
+}
+
+.bodydiv:hover .divoverlay {
+    opacity: 0.1;
+}
+
+progress { 
+    /* appearance: none; */
+    height: 30px;
+    outline-width: 0px;
+}
+
+.divoverlay {
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    height: 100%;
+    width: 100%;
+    opacity: 0;
+    transition: .5s ease;
+    background-color: rgb(255, 255, 255);
+}
+
+.overlayDiv {
+    background-color: rgb(20, 19, 25);
+    /* margin: 10%; */
+    height: 600px;
+    width: 400px;
+    overflow: auto;
+    border-radius: 40px;
+    padding-top: 5%;
+    margin: auto;
+}
+
+.menubar{
+    /* background-color: rgb(20, 19, 25); */
+    width: 100%;
+    margin-bottom: 5%;
+    height: 115px;
+    border-bottom-left-radius: 40px;
+    border-bottom-right-radius: 40px;
+    position: relative;
+    /* padding-top: 62.5px; */
+    margin-top: -115px;
+    z-index: 1;
+}
+
+.sidediv{
+    height: 1000px;
+    width: 25.8333%;
+    background-color: rgb(20, 19, 25);
+    border-radius: 40px;
+    float: left;
+    /* margin-top: 5%; */
+    padding-top: 30px;
+}
+
+.outerdiv{
+    display: block;
+    margin-left: auto;
+    margin-right: auto;
+    /* width: 51.6666%; */
+    width: 750px;
+}
+
+.maindiv {
+    margin-top: 5%;
+}
+
+h1{
+    margin: 7.5%;
+    font-family: 'Poppins', sans-serif;
+    font-weight: 900;
+    color: white;
+    font-size: 65px;
+    margin-top: 0px;
+    width: 85%; 
+}
+
+h2{
+    margin-left: 7.5%;
+    font-family: 'Poppins', sans-serif;
+    font-weight: 700;
+    color: white;
+    font-size: 37.5px;
+    margin-top: 0px;
+    margin-bottom: 30px;
+    /* width: 85%;  */
+}
+
+p{
+    margin-left: 7.5%;
+    width: 85%;
+    font-family: 'Poppins', sans-serif;
+    font-weight: 400;
+    color: #6c6d82;
+    font-size: 20px;
+    margin-bottom: 30px; 
+}
+
+button{
+        margin-left: 7.5%;
+        width: 180px;
+        height: 60px;
+        font-family: 'Poppins', sans-serif;
+		font-weight: 700;
+		color: white;
+        background-color: rgb(34, 36, 42);
+		font-size: 20px;
+        margin-bottom: 30px;
+        border-radius: 40px;
+        border-width: 0px;
+        float: left; 
+    }
+
+button:focus {
+    outline: 0;
+    box-shadow: 0 0 0 3px #ffffff;
+}
+
+#overlay {
+    position: fixed;
+    display: none;
+    width: 100%;
+    height: 100%;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: rgba(0,0,0,0.5);
+    z-index: 2;
+    overflow-x: hidden; 
+    overflow-y: hidden;
+    /* filter: blur(8px);    */
+    backdrop-filter: blur(6px);
+}
+
+body{
+    background-color:rgb(15, 14, 19);
+    margin: 0px;
+
+    padding-top: 115px;
+}
+
+html{
+    background-color:rgb(15, 14, 19);
+}
+</style>

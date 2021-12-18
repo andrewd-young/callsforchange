@@ -1,0 +1,394 @@
+<!DOCTYPE html>
+<html>
+
+  <head>
+    <title>Calls For Change</title>
+    <script src="https://kit.fontawesome.com/ac16ade51f.js" crossorigin="anonymous"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bulma@0.8.2/css/bulma.min.css">
+  </head>
+
+  <body>
+    <div class="menubar" style="position:fixed; background-color: rgb(20, 19, 25);">
+        <a href=".">
+            <i class="fas fa-bullhorn" style="float: left; margin-left: 7.5%;
+            margin-top: 20px; font-size: 70px; color: #ffffff;"></i>
+            <h2 style="font-size: 30px; float: left; margin-left: 3%; margin-top: 10px;">Calls<br>For Change</h2>
+        </a>
+    </div>
+
+    <div style="padding-top:115px;">
+        <div class="maindiv" id="maindiv">
+            
+        </div>
+    </div>
+  </body>
+</html>
+
+<script>
+    campaignCategories = 
+    [{title:'Making Calls<i class="fas fa-phone" style="margin-left:5%;">', html:`
+            <h3>Call Donation </h3>
+            <div style="float: left; width: 40%; margin-left: 10%; margin-bottom: 15px;">
+                <input style="margin-left: 0px; width:90%;" placeholder="Name or Title"></input>
+            </div>
+
+            <div style="float: right; width: 40%; margin-right: 10%; margin-bottom: 15px;">
+                <input style="margin-left: 0px; width:90%; float: right;" placeholder="Phone Number"></input>
+            </div>
+            
+            <h3>Call Notes</h3>
+            <textarea oninput='this.style.height = "";this.style.height = this.scrollHeight + "px"' placeholder="What should the caller say?"></textarea>`, state:false, actionAmount:1, buttonLabel:"Phone Number"}, 
+    {title:'Sending Emails<i class="fas fa-envelope" style="margin-left:5%;"></i>', html:`
+            <h3>Email Donation </h3>
+            <div style="float: left; width: 40%; margin-left: 10%; margin-bottom: 15px;">
+                <input style="margin-left: 0px; width:90%;" placeholder="Name or Title"></input>
+            </div>
+
+            <div style="float: right; width: 40%; margin-right: 10%; margin-bottom: 15px;">
+                <input style="margin-left: 0px; width:90%; float: right;" placeholder="Email Address "></input>
+            </div>
+            
+            <h3>Suggested Contents</h3>
+            <textarea oninput='this.style.height = "";this.style.height = this.scrollHeight + "px"' placeholder="What should this email say?"></textarea>`, state:false, actionAmount:1, buttonLabel:"Email"}, 
+    {title:'Signing Petition<i class="fas fa-file-signature" style="margin-left:5%;"></i>', html:`
+            <h3>Create Petition</h3>
+            <div style="float: left; width: 40%; margin-left: 10%; margin-bottom: 15px;">
+                <input style="margin-left: 0px; width:90%;" placeholder="Petition Title"></input>
+            </div>
+
+            <div style="float: right; width: 40%; margin-right: 10%; margin-bottom: 15px;">
+                <input style="margin-left: 0px; width:90%; float: right;" placeholder="Directed at"></input>
+            </div>
+
+            <textarea oninput='this.style.height = "";this.style.height = this.scrollHeight + "px"' placeholder="Petition description or important details"></textarea>
+
+            <h3>Or Link Petition</h3>
+            <input placeholder="Petition URL"></input>`, state:false, actionAmount:1, buttonLabel:"Petition"},
+    {title:'Making Dontations<i class="fas fa-donate" style="margin-left:5%;"></i>', html:`
+            <h3>Donation Recipient </h3>
+            <div style="float: left; width: 40%; margin-left: 10%; margin-bottom: 15px;">
+                <input style="margin-left: 0px; width:90%;" placeholder="Donation  Title"></input>
+            </div>
+
+            <div style="float: right; width: 40%; margin-right: 10%; margin-bottom: 15px;">
+                <input style="margin-left: 0px; width:90%; float: right;" placeholder="Donation  URL"></input>
+            </div>
+            
+            <textarea oninput='this.style.height = "";this.style.height = this.scrollHeight + "px"' placeholder="Organization description or information"></textarea>
+            `, state:false, actionAmount:1, buttonLabel:"Donation Recipient"},
+    {title:'Attending Protest<i class="fas fa-bullhorn" style="margin-left:5%;"></i>', html:`
+            <h3>Protest Title</h3>
+            <input placeholder="Protest Title or Description"></input>
+
+            <h3>Protest Description</h3>
+            <textarea oninput='this.style.height = "";this.style.height = this.scrollHeight + "px"' placeholder="Protest description or important details"></textarea>
+
+            <h3>Protest Address</h3>
+            <input style="margin-bottom:30px" placeholder="Street Address"></input>
+
+            <div style="float: left; width: 40%; margin-left: 10%;">
+                <input style="margin-left: 0px; width:90%;" placeholder="City"></input>
+            </div>
+
+            <div style="float: right; width: 40%; margin-right: 10%;">
+                <input style="margin-left: 0px; width:90%; float: right;" placeholder="State"></input>
+            </div>`, state:false, actionAmount:1, buttonLabel:"Protest"}];
+
+    function addAction(index){
+        campaignCategories[index].actionAmount++;
+
+        var actionDiv = document.getElementById("actiondiv " + index);
+        actionDiv.innerHTML = "";
+
+        var actionDivContents;
+        for (var i = 0; i < campaignCategories[index].actionAmount; i++) {
+            actionDivContents += campaignCategories[index].html + "\n";
+        }
+        actionDivContents = actionDivContents + '<button style="width:auto; margin-bottom:3px; margin-top:30px; margin-left:0px; margin-right:10%; float:right;" onclick="addAction(' + index + ')">&nbsp&nbsp<i class="fas fa-plus"></i>&nbsp&nbsp' + campaignCategories[index].buttonLabel + '&nbsp&nbsp</button>';
+    }
+
+    function expandAction(index){
+        var actionDiv = document.getElementById("actiondiv " + index);
+
+        var actionDivContents;
+
+        for (var i = 0; i < campaignCategories[index].actionAmount; i++) {
+            actionDivContents += campaignCategories[index].html + "\n";
+        }
+
+        actionDivContents = actionDivContents + '<button style="width:auto; margin-bottom:3px; margin-top:30px; margin-left:0px; margin-right:10%; float:right;" onclick="addAction(' + index + ')">&nbsp&nbsp<i class="fas fa-plus"></i>&nbsp&nbsp' + campaignCategories[index].buttonLabel + '&nbsp&nbsp</button>';
+
+        actionDiv.innerHTML = actionDivContents;
+        // actionDiv.scrollIntoView({behavior: "smooth"});
+
+        var actionLabel = document.getElementById("actionlabel " + index);
+        actionLabel.innerHTML = `<button class="actionbutton" style="" onclick="collapseAction(` + index + `)"><i class="fas fa-minus"></i></button>` + campaignCategories[index].title;
+
+        campaignCategories[index].state = true;
+    }
+
+    function collapseAction(index){
+        var actionDiv = document.getElementById("actiondiv " + index);
+        actionDiv.innerHTML = "";
+        // actionDiv.scrollIntoView({behavior: "smooth"});
+
+        var actionLabel = document.getElementById("actionlabel " + index);
+        actionLabel.innerHTML = `<button class="actionbutton" style="" onclick="expandAction(` + index + `)"><i class="fas fa-plus"  onclick="expandAction(0)"></i></button>` + campaignCategories[index].title;
+        campaignCategories[index].state = false;
+    }
+
+    var pageContents = 
+        [   `<p>What topic do you want to adress?</p>
+            <div style="display: table; width: 80%; margin-left:10%; table-layout: fixed;"><button style="float:left; display: table-cell; margin-left:0px;">Racial Justice</button><button style="float:left; display: table-cell; margin-left:0px;">LGBTQ+</button><button style="float:left; display: table-cell; margin-left:0px;">Healthcare</button></div>
+            <div style="display: table; width: 80%; margin-left:10%; table-layout: fixed;"><button style="float:left; display: table-cell; margin-left:0px;">Criminal Justice</button><button style="float:left; display: table-cell; margin-left:0px;">Human Rights</button><button style="float:left; display: table-cell; margin-left:0px;">Politics</button></div>
+
+            <input placeholder="Other topic"></input>
+
+            <button style="float:right; margin-left: 0%; margin-right: 10%; margin-top:30px;" onclick='window.open("newcampaign.html?p=1", "_self")'>Continue &nbsp&nbsp<i class="fas fa-chevron-right"></i></button>`,
+            
+            `<p style="margin-bottom: 0px;">Create a campaign to promote social change. Raise awareness for an issue, or encourage people to take action in a variety of ways. </p>
+
+            <div style="float: left; width: 40%; margin-left: 10%; margin-bottom: 15px;">
+                <h3 style="margin-left: 0px;">Title</h3>
+                <input style="margin-left: 0px; width:90%;" placeholder="Campaign Title"></input>
+            </div>
+
+            <div style="float: right; width: 40%; margin-right: 10%; margin-bottom: 15px;">
+                <h3 style="margin-left: 0px; margin-left: 10%;">Author</h3>
+                <input style="margin-left: 0px; width:90%; float: right;" placeholder="Name or Organization"></input>
+            </div>
+
+            <h3>Description</h3>
+            <textarea oninput='this.style.height = "";this.style.height = this.scrollHeight + "px"' placeholder="Why is this campaign important?"></textarea>
+
+            <h3>Image</h3>
+            <div style="object-fit:cover; width:80%; height:400px; border-radius: 40px; margin-left: auto; margin-right: auto; display: grid; background-image: url(newpostimagebg.png);">
+                <div style="margin-top: auto; margin-bottom: auto;">
+                    <!-- <h3 style="margin-top: 0px;">Image Link</h3> -->
+                    <input placeholder="Image url"></input>
+                    <div>
+                        <h3 style="float:left; margin-bottom: 0px;">Or</h3>
+                        <button style="float: right; margin-top: 30px; margin-right: 10%; margin-bottom: 0px;">Upload</button>
+                    </div>
+                </div>
+            </div>
+            
+            <button style="float:right; margin-left: 0%; margin-right: 10%; margin-top:30px;" onclick='window.open("newcampaign.html?p=2", "_self")'>Continue &nbsp&nbsp<i class="fas fa-chevron-right"></i></button>`,
+
+            `<h2>Actions</h2>
+            <p>How should people help support your campaign? Add one or more actions or none at all and just encourage people to share. </p>
+            
+            <div class="actionheaderdiv" id="actionheaderdiv 0"><h3 style="margin-bottom: 0px;" id="actionlabel 0"><button class="actionbutton" onclick="expandAction(0)"><i class="fas fa-plus"></i></button>Making Calls<i class="fas fa-phone" style="margin-left:5%;"></i></h3></div>
+            <div style="overflow:auto;" id="actiondiv 0"></div>
+
+            <div class="actionheaderdiv" id="actionheaderdiv 1"><h3 style="margin-bottom: 0px;" id="actionlabel 1"><button class="actionbutton" onclick="expandAction(1)"><i class="fas fa-plus"></i></button>Sending Emails<i class="fas fa-envelope" style="margin-left:5%;"></i></h3></div>
+            <div style="overflow:auto;" id="actiondiv 1"></div>
+
+            <div class="actionheaderdiv" id="actionheaderdiv 2"><h3 style="margin-bottom: 0px;" id="actionlabel 2"><button class="actionbutton" onclick="expandAction(2)"><i class="fas fa-plus"></i></button>Signing Petition<i class="fas fa-file-signature" style="margin-left:5%;"></i></h3></div>
+            <div style="overflow:auto;" id="actiondiv 2"></div>
+
+            <div class="actionheaderdiv" id="actionheaderdiv 3"><h3 style="margin-bottom: 0px;" id="actionlabel 3"><button class="actionbutton" onclick="expandAction(3)"><i class="fas fa-plus"></i></button>Making Dontations<i class="fas fa-donate" style="margin-left:5%;"></i></h3></div>
+            <div style="overflow:auto;" id="actiondiv 3"></div>
+
+            <div class="actionheaderdiv" id="actionheaderdiv 4"><h3 style="margin-bottom: 0px;" id="actionlabel 4"><button class="actionbutton" onclick="expandAction(4)"><i class="fas fa-plus"></i></button>Attending Protest<i class="fas fa-bullhorn" style="margin-left:5%;"></i></h3></div>
+            <div style="overflow:auto;" id="actiondiv 4"></div>
+            
+            <button style="float:right; margin-left: 0%; margin-right: 10%; margin-top:30px;" onclick='window.open("newcampaign.html?p=3", "_self")'>Continue &nbsp&nbsp<i class="fas fa-chevron-right"></i></button>`,
+            
+            ``];
+
+    var pageNumber = Object.fromEntries(new URLSearchParams(location.search)).p;
+    document.getElementById("maindiv").innerHTML = "<h1>Create a Campaign</h1>" + pageContents[pageNumber];
+</script>
+
+<style>
+    .actionheaderdiv{
+        height: 60px;
+        background-color: rgb(34, 36, 42);
+        width: 80%;
+        border-radius: 20px;
+        margin-left: 10%;
+        /* margin-bottom: 30px; */
+        margin-top: 30px;
+    }
+
+    .actionbutton{
+        margin-top: 2px;
+        margin-left: 0px;
+        height:0px;
+        margin-right: 5%;
+        width: 90px;
+        font-family: 'Poppins', sans-serif;
+        font-weight: 700;
+        color: white;
+        font-size: 37.5px;
+    }
+
+    .fa-plus{
+        cursor: pointer;
+    }
+
+    .fa-minus{
+        cursor: pointer;
+    }
+
+
+    .actionbutton:focus {
+        outline: 0;
+        box-shadow: 0 0 0 0;
+    }
+
+  .maindiv {
+    background-color: rgb(20, 19, 25);
+    /* height: 800px; */
+    padding-top: 30px;
+    padding-bottom: 30px;
+    width: 60%;
+    overflow: auto;
+    border-radius: 40px;
+    margin-left: auto;
+    margin-right: auto;
+    margin-top: 5%;
+  }
+
+  input{
+    margin-left: 10%;
+    background-color: rgb(34, 36, 42);
+    width: 80%;
+    height: 60px;
+    border-radius: 20px;
+    border-style:solid;
+    border:none;
+    padding-left:30px;
+    color:white;
+    font-family: 'Poppins', sans-serif;
+    font-weight: 400;
+    font-size: 20px;
+    /* margin-top: 30px; */
+    
+  }
+
+  input::placeholder{
+    color: rgb(51, 54, 63);
+  }
+
+  input:focus {
+        outline: 0;
+        box-shadow: 0 0 0 3px #ffffff;
+  }
+
+  textarea{
+    margin-left: 10%;
+    background-color: rgb(34, 36, 42);
+    width: 80%;
+    height: 100px;
+    border-radius: 20px;
+    border-style:solid;
+    border:none;
+    padding-left:30px;
+    padding-right:30px;
+    padding-top:20px;
+    padding-bottom:20px;
+    color:white;
+    font-family: 'Poppins', sans-serif;
+    font-weight: 400;
+    font-size: 20px;
+    resize: none;
+  }
+
+  textarea:focus {
+        outline: 0;
+        box-shadow: 0 0 0 3px #ffffff;
+  }
+
+  textarea::placeholder{
+    color: rgb(51, 54, 63);
+  }
+
+  body {
+    background-color: rgb(15, 14, 19);
+    margin: 0px;
+    display: grid;
+  }
+
+  html {
+    background-color: rgb(15, 14, 19);
+  }
+
+  h1 {
+    margin-left: 5%;
+    font-family: 'Poppins', sans-serif;
+    font-weight: 900;
+    color: white;
+    font-size: 65px;
+    margin-top: 0px;
+    width: 85%;
+    margin-bottom: 15px;
+  }
+
+  h2 {
+    margin-left: 10%;
+    margin-top: 30px;
+    font-family: 'Poppins', sans-serif;
+    font-weight: 800;
+    color: white;
+    font-size: 50px;
+    /* margin-top: 0px; */
+    margin-bottom: 15px;
+    /* width: 85%;  */
+  }
+
+  h3 {
+    margin-left: 10%;
+    margin-top: 30px;
+    margin-bottom: 15px;
+    font-family: 'Poppins', sans-serif;
+    font-weight: 700;
+    color: white;
+    font-size: 37.5px;
+  }
+
+  p{
+        margin-left: 10%;
+        width: 80%;
+        font-family: 'Poppins', sans-serif;
+		font-weight: 400;
+		color: white;
+		font-size: 20px;
+        margin-bottom: 30px; 
+   }
+
+    button{
+        margin-left: 10%;
+        width: 180px;
+        height: 60px;
+        font-family: 'Poppins', sans-serif;
+		font-weight: 600;
+		color: white;
+        background-color: rgb(34, 36, 42);
+		font-size: 20px;
+        margin-bottom: 30px;
+        border-radius: 40px;
+        border-width: 0px;
+        /* float: left;  */
+        cursor: pointer;
+    }
+
+    button:focus {
+        outline: 0;
+        box-shadow: 0 0 0 3px #ffffff;
+    }
+
+    .menubar{
+		/* background-color: rgb(20, 19, 25); */
+		width: 100%;
+		margin-bottom: 5%;
+		height: 115px;
+		border-bottom-left-radius: 40px;
+		border-bottom-right-radius: 40px;
+		position: relative;
+		/* padding-top: 62.5px; */
+		/* margin-top: -115px; */
+	}
+</style>
