@@ -36,7 +36,7 @@
         <h2 style="width: 50%; margin-right:7.5%">` + campaign.title + `</h2>
         <p>` + campaign.description + `</p>
         <p style="color: white;">` + campaign.callNumber + ` calls - Help us reach ` + getCallGoal(campaign.callNumber) + `</p>
-        <progress class="progress is-info" value="` + (100 * (campaign.callNumber/getCallGoal(campaign.callNumber))) + `" max="100" style="margin-left: 7.5%; width: 85%; margin-bottom: 40px;">60%</progress>`;
+        <progress class="progress is-primary" value="` + (100 * (campaign.callNumber/getCallGoal(campaign.callNumber))) + `" max="100" style="margin-left: 7.5%; width: 85%; margin-bottom: 40px;">60%</progress>`;
 
         // <h3>` + campaign.phoneNumbers[0].numberDescription + `</h3>`
 
